@@ -1,34 +1,176 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="mdp14.mdp14app.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+<LinearLayout
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:orientation="vertical"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/sample_main_layout">
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:layout_weight="12">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Status"
+            android:id="@+id/tv_status" />
+    </LinearLayout>
 
-    </android.support.design.widget.AppBarLayout>
+    <GridLayout
+        android:id="@+id/base_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4">
+    </GridLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="11"
+        android:weightSum="1">
 
-    <include layout="@layout/content_main" />
+        <TableLayout
+            android:layout_width="202dp"
+            android:layout_height="wrap_content">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-</android.support.design.widget.CoordinatorLayout>
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/border"
+                    android:text="F"
+                    android:textSize="50sp"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:padding="5dp"
+                    android:layout_column="19"
+                    android:id="@+id/tv_forward" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/border"
+                    android:text="L"
+                    android:textSize="50sp"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:padding="5dp"
+                    android:layout_column="17"
+                    android:id="@+id/tv_rotateL" />
+
+
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/border"
+                    android:text="R"
+                    android:textSize="50sp"
+                    android:gravity="center"
+                    android:textColor="#ffffff"
+                    android:padding="5dp"
+                    android:layout_column="20"
+                    android:id="@+id/tv_rotateR" />
+
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:layout_width="375dp"
+            android:layout_height="wrap_content" >
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Exploration"
+                    android:id="@+id/btn_explr" />
+
+                <Button
+                    android:text="Fastest run"
+                    android:id="@+id/btn_fastest"
+                    android:layout_column="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:text="C1"
+                    android:id="@+id/btn_config1"
+                    android:layout_column="4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:text="Terminate Explr"
+                    android:id="@+id/btn_terminate"
+                    android:layout_column="0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:text="C2"
+                    android:id="@+id/btn_config2"
+                    android:layout_column="4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </TableRow>
+
+        </TableLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+          android:id="@+id/sample_content_fragment"
+        android:layout_width="match_parent"
+          android:layout_height="match_parent"
+        android:layout_weight="12" >
+
+    </FrameLayout>
+
+
+
+</LinearLayout>
+
