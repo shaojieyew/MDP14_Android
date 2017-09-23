@@ -217,8 +217,8 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    public void sendMsg(String message){
-        sendMessage(message);
+    public boolean sendMsg(String message){
+        return sendMessage(message);
     }
 
     /**
@@ -226,11 +226,11 @@ public class BluetoothChatFragment extends Fragment {
      *
      * @param message A string of text to send.
      */
-    protected void sendMessage(String message) {
+    protected boolean sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
             Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         // Check that there's actually something to send
@@ -243,6 +243,7 @@ public class BluetoothChatFragment extends Fragment {
             mOutStringBuffer.setLength(0);
             mOutEditText.setText(mOutStringBuffer);
         }
+        return true;
     }
 
     /**

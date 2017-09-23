@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     Button btn_fastest;
     Button btn_config1;
     Button btn_config2;
+
+    String status = "Idle";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,47 +74,71 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
         }
 
+        updateStatus(status);
         setBtnListener();
         loadGrid();
+    }
+
+    public void updateStatus(String status){
+        this.status = status;
+        tv_status.setText(status);
     }
 
     private void setBtnListener(){
         btn_forward.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().moveForward();
+                outgoingMessage("F10");
                 loadGrid();
             }
         });
         btn_left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateLeft();
+                outgoingMessage("L90");
                 loadGrid();
             }
         });
         btn_right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateRight();
+                outgoingMessage("R90");
                 loadGrid();
             }
         });
         btn_terminate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                outgoingMessage(STATUS_TERMINATE_HEADER);
             }
         });
         btn_explr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                outgoingMessage(STATUS_EX_HEADER);
+                updateStatus(STATUS_EX_DESC);
             }
         });
         btn_fastest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                outgoingMessage(STATUS_FP_HEADER);
+                updateStatus(STATUS_FP_DESC);
             }
         });
         btn_config1.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences(String.valueOf(R.string.app_name), MODE_PRIVATE);
+                String retrievedText = prefs.getString("string1", null);
+                if (retrievedText != null) {
+                    outgoingMessage(retrievedText);
+                }
             }
         });
         btn_config2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                SharedPreferences prefs = getSharedPreferences(String.valueOf(R.string.app_name), MODE_PRIVATE);
+                String retrievedText = prefs.getString("string2", null);
+                if (retrievedText != null) {
+                    outgoingMessage(retrievedText);
+                }
             }
         });
     }
@@ -245,10 +272,31 @@ public class MainActivity extends AppCompatActivity {
         menu_enable_swipe_input.setChecked(false);
     }
 
+    public static final String STATUS_EX_DESC = "Moving (Exploring)";
+    public static final String STATUS_EX_HEADER = "EX";
+    public static final String STATUS_FP_DESC = "Moving (Fastest Path)";
+    public static final String STATUS_FP_HEADER = "FP";
+    public static final String STATUS_DONE_DESC = "Stopped";
+    public static final String STATUS_DONE_HEADER = "DONE";
+    public static final String STATUS_TERMINATE_HEADER = "TE";
 
     public void incomingMessage(String readMsg) {
         //outgoingMessage(readMsg);
         //update map
+        if(readMsg.length()>0){
+            final String delimiterPattern = "\\|";
+            String actionStatuses []= readMsg.split(delimiterPattern);
+            if(actionStatuses[0].equals(STATUS_EX_HEADER)){
+                updateStatus(STATUS_EX_DESC);
+            }
+            if(actionStatuses[0].equals(STATUS_FP_HEADER)){
+                updateStatus(STATUS_FP_DESC);
+            }
+            if(actionStatuses[0].equals(STATUS_DONE_HEADER)){
+                updateStatus(STATUS_DONE_DESC);
+            }
+        }
+
         JSONObject obj = null;
         try {
             obj = new JSONObject(readMsg);
@@ -276,8 +324,8 @@ public class MainActivity extends AppCompatActivity {
         //
     }
 
-    public void outgoingMessage(String sendMsg) {
-        fragment.sendMsg(sendMsg);
+    public boolean outgoingMessage(String sendMsg) {
+        return fragment.sendMsg(sendMsg);
     }
 
     //set waypoint
@@ -288,11 +336,13 @@ public class MainActivity extends AppCompatActivity {
             r.setPosX(posX);
             r.setPosY(posY);
             r.setDirection(0);
+            outgoingMessage("robot position :"+(int)posX+","+(int)posY+","+0+")");
             menu_set_robot_position.setChecked(false);
         }
         if(menu_set_waypoint.isChecked()){
             Position p = new Position(posX,posY);
             WayPoint.getInstance().setPosition(p);
+            outgoingMessage("waypoint position :"+(int)posX+","+(int)posY+")");
             menu_set_waypoint.setChecked(false);
         }
         loadGrid();
