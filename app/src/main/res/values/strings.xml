@@ -37,8 +37,17 @@
 <string name="button_scan">Scan for devices</string>
 
 <!-- Options Menu -->
-<string name="secure_connect">Connect a device - Secure</string>
+<string name="secure_connect">Connect to Device</string>
 <string name="insecure_connect">Connect a device - Insecure</string>
-<string name="discoverable">Make discoverable</string>
+<string name="discoverable">Make Discoverable</string>
+    <string name="set_waypoint">Set Waypoint</string>
+    <string name="remove_waypoint">Remove Waypoint</string>
+    <string name="set_robot_position">Set Robot Position</string>
+    <string name="auto_map">Auto Update Map</string>
+    <string name="update_map">Manual Update Map</string>
+    <string name="set_config1">Set String 1 (C1)</string>
+    <string name="set_config2">Set String 2 (C2)</string>
+    <string name="swipe_input">Enable Gesture Control</string>
+    <string name="show_bluetooth_service">Show Bluetooth Comm</string>
 
 </resources>

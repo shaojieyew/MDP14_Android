@@ -154,6 +154,21 @@ public class BluetoothChatFragment extends Fragment {
         mConversationView = (ListView) view.findViewById(R.id.in);
         mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (Button) view.findViewById(R.id.button_send);
+        mConversationView.setVisibility(View.INVISIBLE);
+        mOutEditText.setVisibility(View.INVISIBLE);
+        mSendButton.setVisibility(View.INVISIBLE);
+    }
+
+    public void showChat(boolean show){
+        if(show){
+            mConversationView.setVisibility(View.VISIBLE);
+            mOutEditText.setVisibility(View.VISIBLE);
+            mSendButton.setVisibility(View.VISIBLE);
+        }else{
+            mConversationView.setVisibility(View.INVISIBLE);
+            mOutEditText.setVisibility(View.INVISIBLE);
+            mSendButton.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**

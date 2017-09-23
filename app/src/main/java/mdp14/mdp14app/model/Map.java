@@ -3,10 +3,13 @@ package mdp14.mdp14app.model;
 
 import android.util.JsonReader;
 
+import com.example.android.common.logger.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class Map {
 	public static Map map=null;
@@ -102,13 +105,12 @@ public class Map {
 		  }
 	}
 
-	public void setMapJson(String jsonMap){
-		try {
-			JSONObject obj = null;
-			obj = new JSONObject(jsonMap);
+	public void setMapJson(String obstacleHex){
+			//JSONObject obj = null;
+			//obj = new JSONObject(jsonMap);
 			String exploredTileHex="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 			//String exploredObstacleHex="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-			String obstacleHex = obj.getString("grid");
+			//String obstacleHex = obj.getString("grid");
 
 			String exploredTileBinary = HexBin.hexToBin(exploredTileHex);
 			exploredTileBinary =exploredTileBinary.substring(2, exploredTileBinary.length()-2);
@@ -126,6 +128,7 @@ public class Map {
 				}
 			}
 
+
 			for(int i =0;i<obstacleBinary.length();i++){
 				char obstacleBit = '0';
 				if(obstacleBinary.length()>0){
@@ -133,16 +136,11 @@ public class Map {
 				}
 				int y = (i-(i%15))/15;
 				int x = i%15;
-				obstacles[y][x]=0;
+				obstacles[19-y][x]=0;
 				if(obstacleBit=='1'){
 					obstacles[19-y][x]=1;
 				}
 			}
-
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 	}
 
 
@@ -190,4 +188,5 @@ public class Map {
 		binaryObstacle=binaryObstacle+"11";
 		return binaryObstacle;
 	}
+
 }

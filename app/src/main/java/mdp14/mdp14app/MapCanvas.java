@@ -6,75 +6,155 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
 import mdp14.mdp14app.model.Map;
+import mdp14.mdp14app.model.Position;
+import mdp14.mdp14app.model.Robot;
+import mdp14.mdp14app.model.WayPoint;
 
 public class MapCanvas extends View implements View.OnTouchListener {
     final float scale = getResources().getDisplayMetrics().density;
 
     Paint grayPaint = new Paint();
+    Paint lightGrayPaint = new Paint();
+    Paint whitePaint = new Paint();
+    Paint greenPaint = new Paint();
+    Paint blackPaint = new Paint();
+    Paint bluePaint = new Paint();
+    Paint redPaint = new Paint();
 
+    float padding = 50;
+    float paddingX = 50;
+    float paddingY = 0;
+    float w = this.getWidth()-2*50;
+    float h = this.getHeight()-50;
+    float cellWidth = w/15f;
+    float cellHeight = h/20f;
+
+    private GestureDetector  mDetector;
     public MapCanvas(Context context) {
         super(context);
         grayPaint.setColor(Color.LTGRAY);
+        whitePaint.setColor(Color.WHITE);
+        blackPaint.setColor(Color.BLACK);
+        greenPaint.setColor(Color.GREEN);
+        redPaint.setColor(Color.RED);
+        bluePaint.setColor(Color.BLUE);
+        lightGrayPaint.setColor(Color.parseColor("#F8F8F8"));
+
     }
 
-    float padding = 50;
+    public void setGesture(Context context){
+        mDetector = new GestureDetector (context, new MyGestureListener());
+    }
+
+
     protected void onDraw(Canvas canvas) {
-        float x = padding;
-        float y = 0;
-        float w = this.getWidth()-2*padding;
-        float h = this.getHeight()-padding;
+        padding = 50;
+        paddingX = padding;
+        paddingY = 0;
+        h = this.getHeight()-padding;
+        w = this.getWidth()-2*padding;
+        if(h/20f<w/15f){
+            w = h/20f*15f;
+        }else{
+            h= w/15f*20f;
+        }
+        paddingX = (this.getWidth()-w)/2f;
+        cellWidth = w/15f;
+        cellHeight = h/20f;
 
-        //draw background
-        ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
-        mDrawable.getPaint().setColor(Color.RED);
-        mDrawable.setBounds((int)x, (int)y, (int)x + (int)w, (int)y + (int)h);
-        mDrawable.draw(canvas);
+        //draw background (unexlpored)
+        canvas.drawRect(paddingX,  paddingY, paddingX + w,  paddingY + h, redPaint);
 
-        //draw line
+        //draw explored & obstacle
         drawExploredTile(canvas);
 
-        //draw obstacle
+        //draw waypoint
+        drawWaypoint(canvas);
 
         //draw robot
+        drawRobot(canvas);
+    }
 
-        //drawlines
-        for(int i = 0;i<15;i++){
-            canvas.drawLine(i*(w/15)+x, y, i*(w/15)+x, y+h, grayPaint);
-        }
-        for(int i = 0;i<20;i++){
-            canvas.drawLine(x, i*(h/20)+y,x+w,i*(h/20)+y, grayPaint);
+    private void drawWaypoint(Canvas canvas) {
+        Position wp = WayPoint.getInstance().getPosition();
+        if(wp!=null&&wp.getPosX()>=0&&wp.getPosX()<15&&wp.getPosY()<20&&wp.getPosY()>=0){
+            float posX = (paddingX+wp.getPosX()*cellWidth);
+            float posY = (paddingY+(19-wp.getPosY())*cellHeight);
+             canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, bluePaint);
         }
     }
 
-    private void drawExploredTile(Canvas canvas) {
-        //draw explored
-        float sx = padding;
-        float sy = 0;
-        float w = this.getWidth()-2*padding;
-        float h = this.getHeight()-padding;
+    private void drawRobot(Canvas canvas) {
+        Robot r = Robot.getInstance();
+        if(r.getPosX()<1||r.getPosY()<1||r.getPosX()>13||r.getPosY()>18){
+            return;
+        }
         float cellWidth = w/15f;
         float cellHeight = h/20f;
+        float xCenterPosition = r.getPosX()*cellWidth+ paddingX  +(cellWidth/2f);
+        float yCenterPosition = (19f-r.getPosY())*cellWidth+ paddingY  +(cellHeight/2f);
+        canvas.drawCircle(xCenterPosition, yCenterPosition,cellWidth*1.3f, greenPaint);
+
+        float direction = r.getDirection();
+        double radians = Math.toRadians(direction);
+        float sensorCenterX = (float) (xCenterPosition+(cellWidth/1.5f*Math.sin(radians)));
+        float sensorCenterY = (float) (yCenterPosition-(cellWidth/1.5f*Math.cos(radians)));
+        //sensor.centerXProperty().bind(widthProperty().divide(15).multiply(xCenterPosition).add(widthProperty().divide(15f/0.5f).multiply(Math.sin(radians))));
+        //sensor.centerYProperty().bind(heightProperty().divide(20).multiply(yCenterPosition).subtract(heightProperty().divide(20f/0.5f).multiply(Math.cos(radians))));
+        canvas.drawCircle(sensorCenterX, sensorCenterY,cellWidth/3f, blackPaint);
+    }
+    private void drawExploredTile(Canvas canvas) {
+        //draw explored
         int[][]explored = Map.getInstance().getExploredTiles();
         int[][]obstacles = Map.getInstance().getObstacles();
         for(int x =0;x<15;x++){
             for(int y =0;y<20;y++){
               if( explored[y][x] == 1){
-                  int posX = (int)(sx+x*cellWidth);
-                  int posY = (int)(sy+y*cellHeight);
-                  ShapeDrawable mDrawable = new ShapeDrawable(new RectShape());
-                  mDrawable.getPaint().setColor(Color.WHITE);
+                  float posX = (paddingX+x*cellWidth);
+                  float posY = (paddingY+(19-y)*cellHeight);
                   if(obstacles[y][x]==1){
-                      mDrawable.getPaint().setColor(Color.BLACK);
+                      canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, blackPaint);
+                  }else{
+                      if((y==0&&x==0)||
+                              (y==0&&x==1)||
+                              (y==0&&x==2)||
+                              (y==1&&x==0)||
+                              (y==1&&x==1)||
+                              (y==1&&x==2)||
+                              (y==2&&x==0)||
+                              (y==2&&x==1)||
+                              (y==2&&x==2)||
+
+                              (y==19&&x==14)||
+                              (y==19&&x==13)||
+                              (y==19&&x==12)||
+                              (y==18&&x==14)||
+                              (y==18&&x==13)||
+                              (y==18&&x==12)||
+                              (y==17&&x==14)||
+                              (y==17&&x==13)||
+                              (y==17&&x==12)){
+                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, lightGrayPaint);
+                      }else{
+                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, whitePaint);
+                      }
                   }
-                  mDrawable.setBounds(posX, posY, posX+(int)cellWidth, (int)posY+(int)cellHeight);
-                  mDrawable.draw(canvas);
               }
             }
+        }
+        //drawlines
+        for(int i = 0;i<16;i++){
+            canvas.drawLine((float)i*(w/15f)+ paddingX, paddingY, i*(w/15f)+ paddingX, paddingY +h, grayPaint);
+        }
+        for(int i = 0;i<21;i++){
+            canvas.drawLine(paddingX, i*(h/20f)+ paddingY, paddingX +w,i*(h/20f)+ paddingY, grayPaint);
         }
     }
 
@@ -93,22 +173,95 @@ public class MapCanvas extends View implements View.OnTouchListener {
                 Context context = getContext();
                 int duration = Toast.LENGTH_SHORT;
 
-                float x = padding;
-                float y = 0;
-                float w = this.getWidth()-2*padding;
-                float h = this.getHeight()-padding;
-                float selectedX = inX-x;
-                float selectedY = inY-y;
+
+                float selectedX = inX- paddingX;
+                float selectedY = inY- paddingY;
                 float cellWidth = w/15f;
                 float cellHeight = h/20f;
                 int posX = (int)(selectedX/cellWidth);
                 int posY = 19-(int)(selectedY/cellHeight);
                 Toast toast = Toast.makeText(context,"tapped: "+posX+","+posY, duration);
                 toast.show();
+                MainActivity ma = (MainActivity) this.getContext();
+                ma.onGridTapped( posX,  posY);
                 break;
         }
         return true;
     }
 
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event){
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e)
+    {
+        super.dispatchTouchEvent(e);
+        if(mDetector==null){
+            return true;
+        }
+        return mDetector.onTouchEvent(e);
+    }
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        private static final int SWIPE_THRESHOLD = 100;
+        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
+        @Override
+        public boolean onDown(MotionEvent event) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            boolean result = false;
+            try {
+                float diffY = e2.getY() - e1.getY();
+                float diffX = e2.getX() - e1.getX();
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffX > 0) {
+                            onSwipeRight();
+                        } else {
+                            onSwipeLeft();
+                        }
+                        result = true;
+                    }
+                }
+                else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffY > 0) {
+                        onSwipeBottom();
+                    } else {
+                        onSwipeTop();
+                    }
+                    result = true;
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+            return result;
+        }
+    }
+
+    public void onSwipeRight() {
+        MainActivity ma = (MainActivity) this.getContext();
+        ma.onSwipeRight();
+    }
+
+    public void onSwipeLeft() {
+        MainActivity ma = (MainActivity) this.getContext();
+        ma.onSwipeLeft();
+    }
+
+    public void onSwipeTop() {
+        MainActivity ma = (MainActivity) this.getContext();
+        ma.onSwipeTop();
+    }
+
+    public void onSwipeBottom() {
+        MainActivity ma = (MainActivity) this.getContext();
+        ma.onSwipeBottom();
+    }
 }
