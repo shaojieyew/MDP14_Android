@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //initialize all the buttons
         tv_status = (TextView) findViewById(R.id.tv_status);
         btn_forward = (Button) findViewById(R.id.btn_forward);
         btn_left= (Button) findViewById(R.id.btn_left);
@@ -64,9 +65,9 @@ public class MainActivity extends AppCompatActivity {
         btn_fastest= (Button) findViewById(R.id.btn_fastest);
         btn_config1= (Button) findViewById(R.id.btn_config1);
         btn_config2= (Button) findViewById(R.id.btn_config2);
-        //map_grid = (View) findViewById(R.id.mapview);
         base_layout = (GridLayout) findViewById(R.id.base_layout);
 
+        //initialize the bluetooth service component
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             fragment = new BluetoothChatFragment();
@@ -74,16 +75,23 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
         }
 
+        //initialize default status "idle"
         updateStatus(status);
+
+        //initialize listener for all the buttons
         setBtnListener();
+
+        //initialize the grid
         loadGrid();
     }
 
+    //method to update the label textview
     public void updateStatus(String status){
         this.status = status;
         tv_status.setText(status);
     }
 
+    //method to set all the event for buttons
     private void setBtnListener(){
         btn_forward.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -143,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //initalize all the menu item button
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
@@ -158,8 +167,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //load/reload the Grid View into the page
     private void loadGrid(){
         MapCanvas mCustomDrawableView = new MapCanvas(this);
+        //set touch event and swipe event
         if(menu_enable_swipe_input!=null&&menu_enable_swipe_input.isChecked()){
             mCustomDrawableView.setGesture(this);
         }else{
@@ -176,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //this is the event when menu item is clicked
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -183,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
+
         if (id == R.id.action_set_robot_position) {
             boolean checked = item.isChecked();
             clearAllEditableCheckbox();
@@ -239,8 +252,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //this method opens up a dialog to save input string on the phone
+    //index is the key of the string.
+    //eg string 1 is stored in 'string1', string 2 in 'string2'
     private void setConfiguredString(final int index){
-
         final EditText txtField = new EditText(this);
         SharedPreferences prefs = getSharedPreferences(String.valueOf(R.string.app_name), MODE_PRIVATE);
         String retrievedText = prefs.getString("string"+index, null);
@@ -266,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    //this is to uncheck all the checkable menuitem
     private void clearAllEditableCheckbox(){
         menu_set_robot_position.setChecked(false);
         menu_set_waypoint.setChecked(false);
@@ -280,6 +296,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String STATUS_DONE_HEADER = "DONE";
     public static final String STATUS_TERMINATE_HEADER = "TE";
 
+    //method is ran when new message comes in
     public void incomingMessage(String readMsg) {
         //outgoingMessage(readMsg);
         //update map
@@ -324,12 +341,14 @@ public class MainActivity extends AppCompatActivity {
         //
     }
 
+    //method to send out message to rpi thru bluetooth
     public boolean outgoingMessage(String sendMsg) {
         return fragment.sendMsg(sendMsg);
     }
 
-    //set waypoint
-    //set robot
+    //on the coordinate tapped
+    //set waypoint, if menuitem is checked
+    //set robot, if menuitem is checked
     public void onGridTapped(int posX, int posY) {
         if(menu_set_robot_position.isChecked()){
             Robot r = Robot.getInstance();
@@ -348,11 +367,13 @@ public class MainActivity extends AppCompatActivity {
         loadGrid();
     }
 
+    //clear waypoint
     private void removeWaypoint(){
         WayPoint.getInstance().setPosition(null);
         loadGrid();
     }
 
+    //swipe gesture input
     public void onSwipeTop() {
         if(!Robot.getInstance().rotateToNorth()){
             Robot.getInstance().moveForward();

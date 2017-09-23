@@ -53,9 +53,10 @@ public class MapCanvas extends View implements View.OnTouchListener {
         mDetector = new GestureDetector (context, new MyGestureListener());
     }
 
-
+    //onDraw is ran when android render the view on the phone
     protected void onDraw(Canvas canvas) {
-        padding = 50;
+        //calculation for drawing the grids
+        padding = 40;
         paddingX = padding;
         paddingY = 0;
         h = this.getHeight()-padding;
@@ -82,6 +83,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         drawRobot(canvas);
     }
 
+
     private void drawWaypoint(Canvas canvas) {
         Position wp = WayPoint.getInstance().getPosition();
         if(wp!=null&&wp.getPosX()>=0&&wp.getPosX()<15&&wp.getPosY()<20&&wp.getPosY()>=0){
@@ -102,14 +104,15 @@ public class MapCanvas extends View implements View.OnTouchListener {
         float yCenterPosition = (19f-r.getPosY())*cellWidth+ paddingY  +(cellHeight/2f);
         canvas.drawCircle(xCenterPosition, yCenterPosition,cellWidth*1.3f, greenPaint);
 
+        //draw the front of the robot
         float direction = r.getDirection();
         double radians = Math.toRadians(direction);
         float sensorCenterX = (float) (xCenterPosition+(cellWidth/1.5f*Math.sin(radians)));
         float sensorCenterY = (float) (yCenterPosition-(cellWidth/1.5f*Math.cos(radians)));
-        //sensor.centerXProperty().bind(widthProperty().divide(15).multiply(xCenterPosition).add(widthProperty().divide(15f/0.5f).multiply(Math.sin(radians))));
-        //sensor.centerYProperty().bind(heightProperty().divide(20).multiply(yCenterPosition).subtract(heightProperty().divide(20f/0.5f).multiply(Math.cos(radians))));
         canvas.drawCircle(sensorCenterX, sensorCenterY,cellWidth/3f, blackPaint);
     }
+
+    // draw tiles
     private void drawExploredTile(Canvas canvas) {
         //draw explored
         int[][]explored = Map.getInstance().getExploredTiles();
@@ -120,36 +123,22 @@ public class MapCanvas extends View implements View.OnTouchListener {
                   float posX = (paddingX+x*cellWidth);
                   float posY = (paddingY+(19-y)*cellHeight);
                   if(obstacles[y][x]==1){
+                      //draw obstacles
                       canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, blackPaint);
                   }else{
-                      if((y==0&&x==0)||
-                              (y==0&&x==1)||
-                              (y==0&&x==2)||
-                              (y==1&&x==0)||
-                              (y==1&&x==1)||
-                              (y==1&&x==2)||
-                              (y==2&&x==0)||
-                              (y==2&&x==1)||
-                              (y==2&&x==2)||
-
-                              (y==19&&x==14)||
-                              (y==19&&x==13)||
-                              (y==19&&x==12)||
-                              (y==18&&x==14)||
-                              (y==18&&x==13)||
-                              (y==18&&x==12)||
-                              (y==17&&x==14)||
-                              (y==17&&x==13)||
-                              (y==17&&x==12)){
+                      if((y==0&&x==0)||(y==0&&x==1)||(y==0&&x==2)||   (y==1&&x==0)||  (y==1&&x==1)||   (y==1&&x==2)|| (y==2&&x==0)||(y==2&&x==1)|| (y==2&&x==2)||
+  (y==19&&x==14)||   (y==19&&x==13)||   (y==19&&x==12)||    (y==18&&x==14)||   (y==18&&x==13)||     (y==18&&x==12)|| (y==17&&x==14)||    (y==17&&x==13)||  (y==17&&x==12)){
+                         //if it is start or end point show light gray
                           canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, lightGrayPaint);
                       }else{
+                          //show white for explored area
                           canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, whitePaint);
                       }
                   }
               }
             }
         }
-        //drawlines
+        //drawlines for grids, horizontal and vertical
         for(int i = 0;i<16;i++){
             canvas.drawLine((float)i*(w/15f)+ paddingX, paddingY, i*(w/15f)+ paddingX, paddingY +h, grayPaint);
         }
@@ -160,6 +149,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View view, MotionEvent me) {
+        //calculation to get the tapped position from view geometry location
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -205,6 +195,8 @@ public class MapCanvas extends View implements View.OnTouchListener {
         }
         return mDetector.onTouchEvent(e);
     }
+
+    //listener for gesture
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
 
         private static final int SWIPE_THRESHOLD = 100;
