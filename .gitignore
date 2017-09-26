@@ -10,3 +10,6 @@
 /.idea
 /build.gradle
 /app/build.gradle
+/gradlew
+/settings.gradle
+/gradlew.bat
