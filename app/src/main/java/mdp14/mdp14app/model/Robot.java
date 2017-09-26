@@ -1,10 +1,5 @@
 package mdp14.mdp14app.model;
 
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.concurrent.Semaphore;
-
 public class Robot {
 	public static Robot robot=null;
 	public static Robot getInstance(){
@@ -61,6 +56,7 @@ public class Robot {
 		return isMoving;
 	}
 	public void rotate(float degree){
+
 		direction = (direction + degree)%360;
 	}
 	public void rotateRight(){
@@ -103,8 +99,8 @@ public class Robot {
 		return true;
 	}
 
-	public void moveForward(){
-		int distance = 10;
+	public void moveForward(int distance){
+		//int distance = 10;
 		double radians = Math.toRadians(direction);
 		float moveX =  ((distance/10f)*(float)Math.sin(radians));
 		float moveY =  ((distance/10f)*(float)Math.cos(radians));

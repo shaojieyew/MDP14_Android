@@ -4,9 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
-import android.support.v4.view.GestureDetectorCompat;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -61,7 +58,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         paddingY = 0;
         h = this.getHeight()-padding;
         w = this.getWidth()-2*padding;
-        if(h/20f<w/15f){
+        if(h/20f<w/15f){ //adjusting the map cell when in different oritentation
             w = h/20f*15f;
         }else{
             h= w/15f*20f;

@@ -1,16 +1,6 @@
 package mdp14.mdp14app.model;
 
 
-import android.util.JsonReader;
-
-import com.example.android.common.logger.Log;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-
 public class Map {
 	public static Map map=null;
 	public static Map getInstance(){
@@ -41,12 +31,13 @@ public class Map {
 		this.obstacles = obstacles;
 	}
 	
-	private float exploredRate=0; 
+	private float exploredRate=0;
 	
 	public float getExploredRate() {
 		return exploredRate;
 	}
 	//in hexdecimal, from map descriptor file to arrays
+
 	public void setMap(String exploredTileHex,String obstacleHex, String exploredObstacleHex) {
 		 // System.out.println (exploredTile2);
 		  String exploredTileBinary = HexBin.hexToBin(exploredTileHex);

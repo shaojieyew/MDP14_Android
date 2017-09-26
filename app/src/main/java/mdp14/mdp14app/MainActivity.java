@@ -95,7 +95,9 @@ public class MainActivity extends AppCompatActivity {
     private void setBtnListener(){
         btn_forward.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Robot.getInstance().moveForward();
+                Robot.getInstance().moveForward(10);
+
+
                 outgoingMessage("F10");
                 loadGrid();
             }
@@ -376,28 +378,28 @@ public class MainActivity extends AppCompatActivity {
     //swipe gesture input
     public void onSwipeTop() {
         if(!Robot.getInstance().rotateToNorth()){
-            Robot.getInstance().moveForward();
+            Robot.getInstance().moveForward(10);
         }
         loadGrid();
     }
 
     public void onSwipeLeft() {
         if(!Robot.getInstance().rotateToWest()){
-            Robot.getInstance().moveForward();
+            Robot.getInstance().moveForward(10);
         }
         loadGrid();
     }
 
     public void onSwipeRight() {
         if(!Robot.getInstance().rotateToEast()){
-            Robot.getInstance().moveForward();
+            Robot.getInstance().moveForward(10);
         }
         loadGrid();
     }
 
     public void onSwipeBottom() {
         if(!Robot.getInstance().rotateToSouth()){
-            Robot.getInstance().moveForward();
+            Robot.getInstance().moveForward(10);
         }
         loadGrid();
     }
