@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -302,19 +302,35 @@ public class MainActivity extends AppCompatActivity {
     public void incomingMessage(String readMsg) {
         //outgoingMessage(readMsg);
         //update map
+
+
         if(readMsg.length()>0){
             final String delimiterPattern = "\\|";
-            String actionStatuses []= readMsg.split(delimiterPattern);
-            if(actionStatuses[0].equals(STATUS_EX_HEADER)){
+            String message []= readMsg.split(delimiterPattern);
+            if(message[0].equals(STATUS_EX_HEADER)){ //explore
                 updateStatus(STATUS_EX_DESC);
             }
-            if(actionStatuses[0].equals(STATUS_FP_HEADER)){
+            if(message[0].equals(STATUS_FP_HEADER)){ //fastest path
                 updateStatus(STATUS_FP_DESC);
+                String movement[] = message[4].split(","); //if there are multiple movements
+                int movement_size = movement.length;
+                for (int i = 0; i < movement_size; i++){
+                    if (movement[i].contains("F"))
+                        Robot.getInstance().moveForward(10);
+                    if (movement[i].contains("L"))
+                        Robot.getInstance().rotateLeft();
+                    if (movement[i].contains("R"))
+                        Robot.getInstance().rotateRight();
+                }
             }
-            if(actionStatuses[0].equals(STATUS_DONE_HEADER)){
+            if(message[0].equals(STATUS_DONE_HEADER)){ //done
                 updateStatus(STATUS_DONE_DESC);
             }
+
+
+
         }
+        //setMap is for the actual; setMapJson is for AMD
 
         JSONObject obj = null;
         try {
@@ -340,8 +356,9 @@ public class MainActivity extends AppCompatActivity {
         if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
             loadGrid();
         }
-        //
+
     }
+
 
     //method to send out message to rpi thru bluetooth
     public boolean outgoingMessage(String sendMsg) {
