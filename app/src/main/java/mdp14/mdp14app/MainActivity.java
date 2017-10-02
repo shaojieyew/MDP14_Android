@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -134,15 +135,27 @@ public class MainActivity extends AppCompatActivity {
         });
         btn_fastest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
-                String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
-                String direction = String.valueOf(Robot.getInstance().getDirection());
-                String wpX = String.valueOf(WayPoint.getInstance().getPosition().getPosX());
-                String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
-                String FPMsg = STATUS_FP_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
-                outgoingMessage(FPMsg);
-                //outgoingMessage(STATUS_FP_HEADER);
-                updateStatus(STATUS_FP_DESC);
+                if (WayPoint.wp.getPosition() == null) {
+                    status = "Setting WayPoint";
+                    updateStatus(status);
+
+                    menu_set_waypoint.setChecked(true);
+                    Toast toast=Toast.makeText(getApplicationContext(),"Tap the Grid to set WayPoint",Toast.LENGTH_LONG);
+                    toast.show();
+
+                }else{
+                    String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
+                    String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
+                    String direction = String.valueOf(Robot.getInstance().getDirection());
+                    String wpX = String.valueOf(WayPoint.getInstance().getPosition().getPosX());
+                    String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
+                    String FPMsg = STATUS_FP_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
+                    outgoingMessage(FPMsg);
+                    //outgoingMessage(STATUS_FP_HEADER);
+                    updateStatus(STATUS_FP_DESC);
+                }
+
+
             }
         });
         btn_config1.setOnClickListener(new View.OnClickListener() {
@@ -315,34 +328,25 @@ public class MainActivity extends AppCompatActivity {
     public void incomingMessage(String readMsg) {
         //outgoingMessage(readMsg);
         //update map
-<<<<<<< HEAD
-        Robot r = Robot.getInstance();
-        if(readMsg.length()>0){
-            final String delimiterPattern = "\\|";
-            String msg []= readMsg.split(delimiterPattern);
-            if(msg[0].equals(STATUS_EX_HEADER)){
-=======
 
+        Robot r = Robot.getInstance();
 
         if(readMsg.length()>0){
             final String delimiterPattern = "\\|";
             String message []= readMsg.split(delimiterPattern);
             if(message[0].equals(STATUS_EX_HEADER)){ //explore
->>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
-                updateStatus(STATUS_EX_DESC);
-                Map.getInstance().setMap(msg[1],"",msg[2]);
 
-                String posAndDirect[] = msg[3].split(",");
+                updateStatus(STATUS_EX_DESC);
+                Map.getInstance().setMap(message[1],"",message[2]);
+
+                String posAndDirect[] = message[3].split(",");
                 r.setPosX(Float.parseFloat(posAndDirect[0]));
                 r.setPosY(Float.parseFloat(posAndDirect[1]));
                 r.setDirection(Float.parseFloat(posAndDirect[2]));
                 //EX|[explored map]|[explored obstacles]|[robot position & direction]|
             }
-<<<<<<< HEAD
-            if(msg[0].equals(STATUS_FP_HEADER)){
-=======
+
             if(message[0].equals(STATUS_FP_HEADER)){ //fastest path
->>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
                 updateStatus(STATUS_FP_DESC);
                 String movement[] = message[4].split(","); //if there are multiple movements
                 int movement_size = movement.length;
@@ -355,11 +359,8 @@ public class MainActivity extends AppCompatActivity {
                         Robot.getInstance().rotateRight();
                 }
             }
-<<<<<<< HEAD
-            if(msg[0].equals(STATUS_DONE_HEADER)){
-=======
+
             if(message[0].equals(STATUS_DONE_HEADER)){ //done
->>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
                 updateStatus(STATUS_DONE_DESC);
             }
 
