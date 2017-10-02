@@ -6,9 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
@@ -119,17 +119,29 @@ public class MainActivity extends AppCompatActivity {
         btn_terminate.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 outgoingMessage(STATUS_TERMINATE_HEADER);
+                updateStatus(STATUS_TERMINATE_DESC);
             }
         });
         btn_explr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                outgoingMessage(STATUS_EX_HEADER);
+                String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
+                String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
+                String direction = String.valueOf(Robot.getInstance().getDirection());
+                String exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||");
+                outgoingMessage(exploringMsg);
                 updateStatus(STATUS_EX_DESC);
             }
         });
         btn_fastest.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                outgoingMessage(STATUS_FP_HEADER);
+                String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
+                String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
+                String direction = String.valueOf(Robot.getInstance().getDirection());
+                String wpX = String.valueOf(WayPoint.getInstance().getPosition().getPosX());
+                String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
+                String FPMsg = STATUS_FP_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
+                outgoingMessage(FPMsg);
+                //outgoingMessage(STATUS_FP_HEADER);
                 updateStatus(STATUS_FP_DESC);
             }
         });
@@ -297,25 +309,66 @@ public class MainActivity extends AppCompatActivity {
     public static final String STATUS_DONE_DESC = "Stopped";
     public static final String STATUS_DONE_HEADER = "DONE";
     public static final String STATUS_TERMINATE_HEADER = "TE";
+    public static final String STATUS_TERMINATE_DESC = "Terminated";
 
     //method is ran when new message comes in
     public void incomingMessage(String readMsg) {
         //outgoingMessage(readMsg);
         //update map
+<<<<<<< HEAD
+        Robot r = Robot.getInstance();
         if(readMsg.length()>0){
             final String delimiterPattern = "\\|";
-            String actionStatuses []= readMsg.split(delimiterPattern);
-            if(actionStatuses[0].equals(STATUS_EX_HEADER)){
+            String msg []= readMsg.split(delimiterPattern);
+            if(msg[0].equals(STATUS_EX_HEADER)){
+=======
+
+
+        if(readMsg.length()>0){
+            final String delimiterPattern = "\\|";
+            String message []= readMsg.split(delimiterPattern);
+            if(message[0].equals(STATUS_EX_HEADER)){ //explore
+>>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
                 updateStatus(STATUS_EX_DESC);
+                Map.getInstance().setMap(msg[1],"",msg[2]);
+
+                String posAndDirect[] = msg[3].split(",");
+                r.setPosX(Float.parseFloat(posAndDirect[0]));
+                r.setPosY(Float.parseFloat(posAndDirect[1]));
+                r.setDirection(Float.parseFloat(posAndDirect[2]));
+                //EX|[explored map]|[explored obstacles]|[robot position & direction]|
             }
-            if(actionStatuses[0].equals(STATUS_FP_HEADER)){
+<<<<<<< HEAD
+            if(msg[0].equals(STATUS_FP_HEADER)){
+=======
+            if(message[0].equals(STATUS_FP_HEADER)){ //fastest path
+>>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
                 updateStatus(STATUS_FP_DESC);
+                String movement[] = message[4].split(","); //if there are multiple movements
+                int movement_size = movement.length;
+                for (int i = 0; i < movement_size; i++){
+                    if (movement[i].contains("F"))
+                        Robot.getInstance().moveForward(10);
+                    if (movement[i].contains("L"))
+                        Robot.getInstance().rotateLeft();
+                    if (movement[i].contains("R"))
+                        Robot.getInstance().rotateRight();
+                }
             }
-            if(actionStatuses[0].equals(STATUS_DONE_HEADER)){
+<<<<<<< HEAD
+            if(msg[0].equals(STATUS_DONE_HEADER)){
+=======
+            if(message[0].equals(STATUS_DONE_HEADER)){ //done
+>>>>>>> 7b3aa66c1730f2d3a0f4c9c26914461b25e20f1e
                 updateStatus(STATUS_DONE_DESC);
             }
-        }
 
+
+
+        }
+        //setMap is for the actual; setMapJson is for AMD
+
+        /*
         JSONObject obj = null;
         try {
             obj = new JSONObject(readMsg);
@@ -336,12 +389,14 @@ public class MainActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        */
 
         if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
             loadGrid();
         }
-        //
+
     }
+
 
     //method to send out message to rpi thru bluetooth
     public boolean outgoingMessage(String sendMsg) {
