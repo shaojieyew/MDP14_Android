@@ -17,13 +17,14 @@ import mdp14.mdp14app.model.WayPoint;
 public class MapCanvas extends View implements View.OnTouchListener {
     final float scale = getResources().getDisplayMetrics().density;
 
-    Paint grayPaint = new Paint();
-    Paint lightGrayPaint = new Paint();
-    Paint whitePaint = new Paint();
-    Paint greenPaint = new Paint();
-    Paint blackPaint = new Paint();
-    Paint bluePaint = new Paint();
-    Paint redPaint = new Paint();
+    Paint separator = new Paint();      //Horizontal and vertical lines on Grid
+    Paint startEndPoint = new Paint();  //Start and End points
+    Paint exploredArea = new Paint();   //Explored area
+    Paint robot = new Paint();          //Robot
+    Paint robotEye = new Paint();       //Robot eye
+    Paint obstacle = new Paint();       //Obstacles
+    Paint waypoint = new Paint();       //Waypoint
+    Paint unexploredArea = new Paint(); //Unexplored area
 
     float padding = 50;
     float paddingX = 50;
@@ -36,13 +37,14 @@ public class MapCanvas extends View implements View.OnTouchListener {
     private GestureDetector  mDetector;
     public MapCanvas(Context context) {
         super(context);
-        grayPaint.setColor(Color.LTGRAY);
-        whitePaint.setColor(Color.WHITE);
-        blackPaint.setColor(Color.BLACK);
-        greenPaint.setColor(Color.GREEN);
-        redPaint.setColor(Color.RED);
-        bluePaint.setColor(Color.BLUE);
-        lightGrayPaint.setColor(Color.parseColor("#F8F8F8"));
+        separator.setColor(Color.parseColor("#81DEFF"));
+        exploredArea.setColor(Color.WHITE);
+        obstacle.setColor(Color.BLACK);
+        robot.setColor(Color.parseColor("#F03958")); //#fb3958 #A401FD
+        robotEye.setColor((Color.WHITE));
+        unexploredArea.setColor(Color.parseColor("#458eff"));   //#0696D7
+        waypoint.setColor(Color.parseColor("#00E40B"));
+        startEndPoint.setColor(Color.parseColor("#F8F8F8"));
 
     }
 
@@ -68,7 +70,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         cellHeight = h/20f;
 
         //draw background (unexlpored)
-        canvas.drawRect(paddingX,  paddingY, paddingX + w,  paddingY + h, redPaint);
+        canvas.drawRect(paddingX,  paddingY, paddingX + w,  paddingY + h, unexploredArea);
 
         //draw explored & obstacle
         drawExploredTile(canvas);
@@ -86,7 +88,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         if(wp!=null&&wp.getPosX()>=0&&wp.getPosX()<15&&wp.getPosY()<20&&wp.getPosY()>=0){
             float posX = (paddingX+wp.getPosX()*cellWidth);
             float posY = (paddingY+(19-wp.getPosY())*cellHeight);
-             canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, bluePaint);
+             canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, waypoint);
         }
     }
 
@@ -99,14 +101,14 @@ public class MapCanvas extends View implements View.OnTouchListener {
         float cellHeight = h/20f;
         float xCenterPosition = r.getPosX()*cellWidth+ paddingX  +(cellWidth/2f);
         float yCenterPosition = (19f-r.getPosY())*cellWidth+ paddingY  +(cellHeight/2f);
-        canvas.drawCircle(xCenterPosition, yCenterPosition,cellWidth*1.3f, greenPaint);
+        canvas.drawCircle(xCenterPosition, yCenterPosition,cellWidth*1.3f, robot);
 
         //draw the front of the robot
         float direction = r.getDirection();
         double radians = Math.toRadians(direction);
         float sensorCenterX = (float) (xCenterPosition+(cellWidth/1.5f*Math.sin(radians)));
         float sensorCenterY = (float) (yCenterPosition-(cellWidth/1.5f*Math.cos(radians)));
-        canvas.drawCircle(sensorCenterX, sensorCenterY,cellWidth/3f, blackPaint);
+        canvas.drawCircle(sensorCenterX, sensorCenterY,cellWidth/3f, robotEye);
     }
 
     // draw tiles
@@ -121,15 +123,15 @@ public class MapCanvas extends View implements View.OnTouchListener {
                   float posY = (paddingY+(19-y)*cellHeight);
                   if(obstacles[y][x]==1){
                       //draw obstacles
-                      canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, blackPaint);
+                      canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, obstacle);
                   }else{
                       if((y==0&&x==0)||(y==0&&x==1)||(y==0&&x==2)||   (y==1&&x==0)||  (y==1&&x==1)||   (y==1&&x==2)|| (y==2&&x==0)||(y==2&&x==1)|| (y==2&&x==2)||
   (y==19&&x==14)||   (y==19&&x==13)||   (y==19&&x==12)||    (y==18&&x==14)||   (y==18&&x==13)||     (y==18&&x==12)|| (y==17&&x==14)||    (y==17&&x==13)||  (y==17&&x==12)){
                          //if it is start or end point show light gray
-                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, lightGrayPaint);
+                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, startEndPoint);
                       }else{
                           //show white for explored area
-                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, whitePaint);
+                          canvas.drawRect(posX, posY, posX+cellWidth, posY+cellHeight, exploredArea);
                       }
                   }
               }
@@ -137,10 +139,10 @@ public class MapCanvas extends View implements View.OnTouchListener {
         }
         //drawlines for grids, horizontal and vertical
         for(int i = 0;i<16;i++){
-            canvas.drawLine((float)i*(w/15f)+ paddingX, paddingY, i*(w/15f)+ paddingX, paddingY +h, grayPaint);
+            canvas.drawLine((float)i*(w/15f)+ paddingX, paddingY, i*(w/15f)+ paddingX, paddingY +h, separator);
         }
         for(int i = 0;i<21;i++){
-            canvas.drawLine(paddingX, i*(h/20f)+ paddingY, paddingX +w,i*(h/20f)+ paddingY, grayPaint);
+            canvas.drawLine(paddingX, i*(h/20f)+ paddingY, paddingX +w,i*(h/20f)+ paddingY, separator);
         }
     }
 

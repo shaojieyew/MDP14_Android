@@ -8,7 +8,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="62dp"
+        android:layout_height="50dp"
 
         >
 
@@ -31,7 +31,106 @@
         android:layout_weight="5">
     </GridLayout>
 
-    <RelativeLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        //Forward Left Right Section
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="40"
+            android:layout_height="100dp"
+            android:orientation="vertical">
+            <Button
+                android:text="Forward"
+                android:id="@+id/btn_forward"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="50"
+                android:orientation="horizontal">
+                <Button
+                    android:text="Left"
+                    android:id="@+id/btn_left"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"/>
+                <Button
+                    android:text="Right"
+                    android:id="@+id/btn_right"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        //End Ex Section
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="100dp"
+            android:orientation="vertical">
+            <Button
+                android:text="End EX"
+                android:id="@+id/btn_terminate"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            </LinearLayout>
+
+        //EX and FP Section
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="100dp"
+            android:orientation="vertical">
+
+            <Button
+                android:text="EX"
+                android:id="@+id/btn_explr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:text="FP"
+                android:id="@+id/btn_fastest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        //C1 and C1 Section
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="20"
+            android:layout_height="100dp"
+            android:orientation="vertical">
+
+            <Button
+                android:text="C1"
+                android:id="@+id/btn_config1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:text="C2"
+                android:id="@+id/btn_config2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+<!--
+        <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="118dp">
 
@@ -57,8 +156,8 @@
             android:layout_toEndOf="@+id/btn_left" />
 
         <Button
-            android:text="L"
             style="?android:attr/buttonStyleSmall"
+            android:text="L"
             android:id="@+id/btn_left"
             android:layout_width="wrap_content"
             android:layout_weight="1"
@@ -116,11 +215,13 @@
 
     </RelativeLayout>
 
+-->
+
 
     <FrameLayout
           android:id="@+id/sample_content_fragment"
         android:layout_width="match_parent"
-          android:layout_height="83dp">
+          android:layout_height="80dp">
 
     </FrameLayout>
 
