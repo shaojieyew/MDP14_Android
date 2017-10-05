@@ -38,6 +38,11 @@ public class MapCanvas extends View implements View.OnTouchListener {
     float cellWidth = w/15f;
     float cellHeight = h/20f;
 
+    int lastX;
+    int lastY;
+    String toastText;
+    Toast mCurrentToast = null;
+
     private GestureDetector  mDetector;
     private Activity mScaleDetector;
 
@@ -71,9 +76,11 @@ public class MapCanvas extends View implements View.OnTouchListener {
         }else{
             h= w/15f*20f;
         }
+
         paddingX = (this.getWidth()-w)/2f;
         cellWidth = w/15f;
         cellHeight = h/20f;
+
 
         //draw background (unexlpored)
         canvas.drawRect(paddingX,  paddingY, paddingX + w,  paddingY + h, unexploredArea);
@@ -164,8 +171,66 @@ public class MapCanvas extends View implements View.OnTouchListener {
         }
         me.getSource();
 
-        switch(me.getAction()) {
+        float X;
+        float Y;
 
+        float selectedX;
+        float selectedY;
+        float cellWidth = w/15f;
+        float cellHeight = h/20f;
+
+        int posX;
+        int posY;
+
+
+        switch(me.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                X = me.getX();
+                Y = me.getY();
+                selectedX = X- paddingX;
+                selectedY = Y- paddingY;
+                posX = (int)(selectedX/cellWidth);
+                posY = 19-(int)(selectedY/cellHeight);
+                lastX = posX;
+                lastY = posY;
+                toastText = "tapped " + posX + ", " + posY;
+                //showToast(toastText);
+
+                break;
+
+            case MotionEvent.ACTION_MOVE: {
+                X = me.getX();
+                Y = me.getY();
+                selectedX = X- paddingX;
+                selectedY = Y- paddingY;
+                posX = (int)(selectedX/cellWidth);
+                posY = 19-(int)(selectedY/cellHeight);
+                lastX = posX;
+                lastY = posY;
+                toastText = "tapped " + posX + ", " + posY;
+
+                break;
+            }
+
+            case MotionEvent.ACTION_POINTER_UP: {
+                X = me.getX();
+                Y = me.getY();
+                selectedX = X- paddingX;
+                selectedY = Y- paddingY;
+                posX = (int)(selectedX/cellWidth);
+                posY = 19-(int)(selectedY/cellHeight);
+                lastX = posX;
+                lastY = posY;
+                toastText = "tapped " + posX + ", " + posY;
+                //showToast(toastText);
+                break;
+            }
+        }
+        showToast(toastText);
+        MainActivity ma = (MainActivity) this.getContext();
+        ma.onGridTapped( lastX,  lastY);
+
+        /*switch(me.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 float inX = me.getX();
                 float inY = me.getY();
@@ -217,18 +282,20 @@ public class MapCanvas extends View implements View.OnTouchListener {
                 break;
             }
         }
+        */
         return true;
     }
 
     //Show toast
-    Toast mCurrentToast = null;
+
     public void showToast(String text) {
 
-        Context context = getContext();
+
         if (mCurrentToast != null) {
             mCurrentToast.cancel();
         }
 
+        Context context = getContext();
         mCurrentToast = Toast.makeText(context,text, Toast.LENGTH_SHORT);
         //mCurrentToast.setText(text);
         mCurrentToast.show();

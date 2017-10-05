@@ -499,4 +499,18 @@ public class MainActivity extends AppCompatActivity {
         }
         loadGrid();
     }
+
+    @Override
+    protected void onStop() {
+        // call the superclass method first
+        super.onStop();
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
 }
+

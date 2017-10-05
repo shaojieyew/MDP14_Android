@@ -172,107 +172,15 @@
         </LinearLayout>
     </LinearLayout>
 
-
-<!--
-        <RelativeLayout
+    <FrameLayout
+        android:id="@+id/sample_content_fragment"
         android:layout_width="match_parent"
-        android:layout_height="118dp">
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
 
-        <Button
-            android:text="R"
-            style="?android:attr/buttonStyleSmall"
-            android:id="@+id/btn_right"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/btn_forward"
-            android:layout_marginTop="50dp" />
+        >
 
-        <Button
-            android:text="F"
-            style="?android:attr/buttonStyleSmall"
-            android:id="@+id/btn_forward"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/btn_left" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:text="L"
-            android:id="@+id/btn_left"
-            android:layout_width="wrap_content"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_alignTop="@+id/btn_right"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="EX"
-            android:id="@+id/btn_explr"
-            android:layout_alignParentTop="true"
-            android:layout_toStartOf="@+id/btn_config1" />
-
-        <Button
-            android:text="End EX"
-            android:id="@+id/btn_terminate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/btn_fastest"
-            android:layout_toStartOf="@+id/btn_explr" />
-
-        <Button
-            android:text="FP"
-            android:id="@+id/btn_fastest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_alignTop="@+id/btn_right"
-            android:layout_alignStart="@+id/btn_explr" />
-
-        <Button
-            android:text="C1"
-            android:id="@+id/btn_config1"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp"
-            android:layout_above="@+id/btn_config2"
-            android:layout_alignParentEnd="true" />
-
-        <Button
-            android:text="C2"
-            android:id="@+id/btn_config2"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:layout_below="@+id/btn_explr"
-            android:layout_toEndOf="@+id/btn_explr" />
-
-    </RelativeLayout>
-
--->
-
-
-
-        <FrameLayout
-            android:id="@+id/sample_content_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-
-            >
-
-        </FrameLayout>
-        // the views here that you want to make scrollable
+    </FrameLayout>
 
 </LinearLayout>
 
