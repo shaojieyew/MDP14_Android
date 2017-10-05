@@ -3,6 +3,7 @@ package mdp14.mdp14app;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,8 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Timer;
 
 import mdp14.mdp14app.bluetooth.BluetoothChatFragment;
 import mdp14.mdp14app.model.Map;
@@ -50,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
     Button btn_config2;
 
     String status = "Idle";
+
+    //int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -348,18 +353,49 @@ public class MainActivity extends AppCompatActivity {
 
             if(message[0].equals(STATUS_FP_HEADER)){ //fastest path
                 updateStatus(STATUS_FP_DESC);
+
+                /*final String movement[] = message[4].split(","); //if there are multiple movements
+                final int movement_size = movement.length;
+                final int j = movement_size;
+                final Handler handler = new Handler();
+                i=0;
+                handler.post(new Runnable() { //move the robot after every movement
+                    @Override
+                    public void run() {
+                        if (i < j){
+                            if (movement[i].contains("F")) {
+                                Robot.getInstance().moveForward(10);
+                            }
+                            if (movement[i].contains("L")){
+                                Robot.getInstance().rotateLeft();
+
+                            }
+                            if (movement[i].contains("R")){
+                                Robot.getInstance().rotateRight();
+                            }
+                        }
+                        loadGrid();
+                        i++;
+                        handler.postDelayed(this, 1000); //run the runnable every 1000ms
+                    }
+                });
+                */
                 String movement[] = message[4].split(","); //if there are multiple movements
                 int movement_size = movement.length;
+
                 for (int i = 0; i < movement_size; i++){
-                    if (movement[i].contains("F"))
+                    if (movement[i].contains("F")) {
                         Robot.getInstance().moveForward(10);
-                    if (movement[i].contains("L"))
+                    }
+                    if (movement[i].contains("L")){
                         Robot.getInstance().rotateLeft();
-                    if (movement[i].contains("R"))
+                    }
+                    if (movement[i].contains("R")){
                         Robot.getInstance().rotateRight();
+                        }
+
                 }
             }
-
             if(message[0].equals(STATUS_DONE_HEADER)){ //done
                 updateStatus(STATUS_DONE_DESC);
             }
@@ -399,6 +435,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     //method to send out message to rpi thru bluetooth
     public boolean outgoingMessage(String sendMsg) {
         return fragment.sendMsg(sendMsg);
@@ -413,14 +450,15 @@ public class MainActivity extends AppCompatActivity {
             r.setPosX(posX);
             r.setPosY(posY);
             r.setDirection(0);
-            outgoingMessage("robot position :"+(int)posX+","+(int)posY+","+0+")");
-            menu_set_robot_position.setChecked(false);
+            outgoingMessage("robot position : ("+(int)posX+","+(int)posY+","+0+")");
+
+            //menu_set_robot_position.setChecked(false);
         }
         if(menu_set_waypoint.isChecked()){
             Position p = new Position(posX,posY);
             WayPoint.getInstance().setPosition(p);
-            outgoingMessage("waypoint position :"+(int)posX+","+(int)posY+")");
-            menu_set_waypoint.setChecked(false);
+            outgoingMessage("waypoint position : ("+(int)posX+","+(int)posY+")");
+            //menu_set_waypoint.setChecked(false);
         }
         loadGrid();
     }

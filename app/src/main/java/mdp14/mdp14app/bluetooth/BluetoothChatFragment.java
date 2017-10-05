@@ -20,13 +20,16 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,12 +47,15 @@ import android.widget.Toast;
 
 import com.example.android.common.logger.Log;
 
+import java.util.ArrayList;
+
 import mdp14.mdp14app.MainActivity;
 import mdp14.mdp14app.R;
 
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
+
 public class BluetoothChatFragment extends Fragment {
 
     private static final String TAG = "BluetoothChatFragment";
@@ -73,6 +79,7 @@ public class BluetoothChatFragment extends Fragment {
      * Array adapter for the conversation thread
      */
     private ArrayAdapter<String> mConversationArrayAdapter;
+
 
     /**
      * String buffer for outgoing messages
