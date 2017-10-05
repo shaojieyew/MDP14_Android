@@ -337,6 +337,8 @@ public class MainActivity extends AppCompatActivity {
         Robot r = Robot.getInstance();
 
         if(readMsg.length()>0){
+            menu_show_bluetooth_chat.setChecked(true);
+            fragment.showChat(true);
             final String delimiterPattern = "\\|";
             String message []= readMsg.split(delimiterPattern);
             if(message[0].equals(STATUS_EX_HEADER)){ //explore
