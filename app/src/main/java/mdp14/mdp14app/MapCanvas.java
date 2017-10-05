@@ -182,6 +182,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         int posX;
         int posY;
 
+        MainActivity ma = (MainActivity) this.getContext();
 
         switch(me.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -223,12 +224,14 @@ public class MapCanvas extends View implements View.OnTouchListener {
                 lastY = posY;
                 toastText = "tapped " + posX + ", " + posY;
                 //showToast(toastText);
+
+
                 break;
             }
         }
         showToast(toastText);
-        MainActivity ma = (MainActivity) this.getContext();
         ma.onGridTapped( lastX,  lastY);
+
 
         /*switch(me.getAction()) {
             case MotionEvent.ACTION_DOWN:

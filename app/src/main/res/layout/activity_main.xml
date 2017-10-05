@@ -10,10 +10,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-
-        >
-
+        android:layout_height="50dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,8 +19,7 @@
             android:id="@+id/tv_status"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:textColor="@android:color/white"
-            />
+            android:textColor="@android:color/white"/>
 
     </RelativeLayout>
 

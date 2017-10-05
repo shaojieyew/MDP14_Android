@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     status = "Setting WayPoint";
                     updateStatus(status);
 
+                    menu_set_robot_position.setChecked(false);
                     menu_set_waypoint.setChecked(true);
                     Toast toast=Toast.makeText(getApplicationContext(),"Tap the Grid to set WayPoint",Toast.LENGTH_LONG);
                     toast.show();
@@ -452,14 +453,17 @@ public class MainActivity extends AppCompatActivity {
             r.setPosX(posX);
             r.setPosY(posY);
             r.setDirection(0);
-            outgoingMessage("robot position : ("+(int)posX+","+(int)posY+","+0+")");
+            //outgoingMessage("robot position : ("+(int)posX+","+(int)posY+","+0+")");
 
+            //Make a prompt here to confirm
             //menu_set_robot_position.setChecked(false);
         }
         if(menu_set_waypoint.isChecked()){
             Position p = new Position(posX,posY);
             WayPoint.getInstance().setPosition(p);
-            outgoingMessage("waypoint position : ("+(int)posX+","+(int)posY+")");
+            //outgoingMessage("waypoint position : ("+(int)posX+","+(int)posY+")");
+
+            //Make a prompt here to confirm
             //menu_set_waypoint.setChecked(false);
         }
         loadGrid();

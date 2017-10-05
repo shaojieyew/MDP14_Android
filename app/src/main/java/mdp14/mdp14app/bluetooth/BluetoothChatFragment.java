@@ -51,6 +51,7 @@ import com.example.android.common.logger.Log;
 import java.util.ArrayList;
 
 import mdp14.mdp14app.MainActivity;
+import mdp14.mdp14app.MapCanvas;
 import mdp14.mdp14app.R;
 
 /**
