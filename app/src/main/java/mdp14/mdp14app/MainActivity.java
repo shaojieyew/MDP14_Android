@@ -54,7 +54,16 @@ public class MainActivity extends AppCompatActivity {
 
     String status = "Idle";
 
-    //int i = 0;
+    /*/For robot fastest-path animation
+    int i = 0;
+    String movement[] = new String[0]; //if there are multiple movements
+    int movement_size = movement.length;
+    Handler handler = new Handler();
+    Handler handler1 = new Handler();
+    int j = 0;
+    String step [] = new String [0];
+    int noOfSteps = 0;
+    /*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,21 +113,21 @@ public class MainActivity extends AppCompatActivity {
                 Robot.getInstance().moveForward(10);
 
 
-                outgoingMessage("F10");
+                outgoingMessage("MV||F10|");
                 loadGrid();
             }
         });
         btn_left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateLeft();
-                outgoingMessage("L90");
+                outgoingMessage("MV||L90|");
                 loadGrid();
             }
         });
         btn_right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateRight();
-                outgoingMessage("R90");
+                outgoingMessage("MV||R90|");
                 loadGrid();
             }
         });
@@ -273,6 +282,7 @@ public class MainActivity extends AppCompatActivity {
             loadGrid();
             return true;
         }
+
         if (id == R.id.action_show_bluetooth_chat) {
             boolean checked = item.isChecked();
             item.setChecked(!checked);
@@ -327,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String STATUS_FP_HEADER = "FP";
     public static final String STATUS_DONE_DESC = "Stopped";
     public static final String STATUS_DONE_HEADER = "DONE";
-    public static final String STATUS_TERMINATE_HEADER = "TE";
+    public static final String STATUS_TERMINATE_HEADER = "TE|||";
     public static final String STATUS_TERMINATE_DESC = "Terminated";
 
     //method is ran when new message comes in
@@ -335,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
         //outgoingMessage(readMsg);
         //update map
 
-        Robot r = Robot.getInstance();
+        final Robot r = Robot.getInstance();
 
         if(readMsg.length()>0){
             menu_show_bluetooth_chat.setChecked(true);
@@ -354,41 +364,89 @@ public class MainActivity extends AppCompatActivity {
                 //EX|[explored map]|[explored obstacles]|[robot position & direction]|
             }
 
-            if(message[0].equals(STATUS_FP_HEADER)){ //fastest path
+            //fastest path
+            if(message[0].equals(STATUS_FP_HEADER)){
+
+
                 updateStatus(STATUS_FP_DESC);
 
-                /*final String movement[] = message[4].split(","); //if there are multiple movements
-                final int movement_size = movement.length;
-                final int j = movement_size;
-                final Handler handler = new Handler();
+                /*/ New Animation
+                int i = 0;
+                String movement[] = message[4].split(",");
+                int movement_size = movement.length;
+                final Handler handlerL = new Handler();
+                final Handler handlerR = new Handler();
+                for (i = 0; i < movement_size; i++){
+                    if (movement[i].contains("L")){
+                        handlerL.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Robot.getInstance().rotateLeft();
+                                loadGrid();
+                            }
+                        },1000);
+                    }
+                    else if (movement[i].contains("R")){
+                        handlerR.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Robot.getInstance().rotateRight();
+                                loadGrid();
+                            }
+                        },2000);
+                    }
+                }
+                /*/
+
+
+                /*/ Old Animation
                 i=0;
-                handler.post(new Runnable() { //move the robot after every movement
-                    @Override
-                    public void run() {
-                        if (i < j){
+                movement = new String[0];
+                movement = (message[4].split(",")); //if there are multiple movements
+                movement_size = movement.length;
+
+                while (i < movement_size) {
+                    handler.postDelayed(new Runnable() { //move the robot after every movement
+                        @Override
+                        public void run() {
+
+                            //handler1 = new Handler();
                             if (movement[i].contains("F")) {
                                 Robot.getInstance().moveForward(10);
-                            }
-                            if (movement[i].contains("L")){
+
+                            } else if (movement[i].contains("L")) {
                                 Robot.getInstance().rotateLeft();
 
-                            }
-                            if (movement[i].contains("R")){
+                            } else if (movement[i].contains("R")) {
                                 Robot.getInstance().rotateRight();
                             }
+
+                            loadGrid();
+
                         }
-                        loadGrid();
-                        i++;
-                        handler.postDelayed(this, 1000); //run the runnable every 1000ms
-                    }
-                });
-                */
+
+
+                    }, 1000);
+                    i++;
+
+                }/*/
+
+
+                // Without animation
+
                 String movement[] = message[4].split(","); //if there are multiple movements
                 int movement_size = movement.length;
 
                 for (int i = 0; i < movement_size; i++){
                     if (movement[i].contains("F")) {
-                        Robot.getInstance().moveForward(10);
+                        int j = 0;
+                        String step[] = movement[i].split("F");
+                        int noOfSteps = (Integer.parseInt(step[1])/10);
+                        while (j < noOfSteps){
+                            Robot.getInstance().moveForward(10);
+                            j++;
+                        }
+
                     }
                     if (movement[i].contains("L")){
                         Robot.getInstance().rotateLeft();
@@ -397,7 +455,9 @@ public class MainActivity extends AppCompatActivity {
                         Robot.getInstance().rotateRight();
                         }
 
-                }
+                } //
+
+
             }
             if(message[0].equals(STATUS_DONE_HEADER)){ //done
                 updateStatus(STATUS_DONE_DESC);

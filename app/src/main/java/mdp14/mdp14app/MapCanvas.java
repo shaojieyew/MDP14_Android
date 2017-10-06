@@ -169,6 +169,7 @@ public class MapCanvas extends View implements View.OnTouchListener {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         me.getSource();
 
         float X;
