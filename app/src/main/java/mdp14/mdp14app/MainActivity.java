@@ -54,16 +54,23 @@ public class MainActivity extends AppCompatActivity {
 
     String status = "Idle";
 
-    /*/For robot fastest-path animation
+    /*/int i = 0;
+    String movement[] = new String[0]; //if there are multiple movements
+    int movement_size = movement.length;
+    /*/
+
+    //For robot fastest-path animation
     int i = 0;
     String movement[] = new String[0]; //if there are multiple movements
     int movement_size = movement.length;
     Handler handler = new Handler();
-    Handler handler1 = new Handler();
+    Runnable allMovementCommand;
+    Handler handlerForward = new Handler();
+    Runnable forwardMovement;
     int j = 0;
     String step [] = new String [0];
     int noOfSteps = 0;
-    /*/
+    //
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,12 +146,25 @@ public class MainActivity extends AppCompatActivity {
         });
         btn_explr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
-                String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
-                String direction = String.valueOf(Robot.getInstance().getDirection());
-                String exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||");
-                outgoingMessage(exploringMsg);
-                updateStatus(STATUS_EX_DESC);
+                if (WayPoint.wp.getPosition() == null) {
+                    status = "Setting WayPoint";
+                    updateStatus(status);
+
+                    menu_set_robot_position.setChecked(false);
+                    menu_set_waypoint.setChecked(true);
+                    Toast toast=Toast.makeText(getApplicationContext(),"Tap the Grid to set WayPoint",Toast.LENGTH_LONG);
+                    toast.show();
+
+                }else{
+                    String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
+                    String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
+                    String direction = String.valueOf(Robot.getInstance().getDirection());
+                    String wpX = String.valueOf(WayPoint.getInstance().getPosition().getPosX());
+                    String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
+                    String exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
+                    outgoingMessage(exploringMsg);
+                    updateStatus(STATUS_EX_DESC);
+                }
             }
         });
         btn_fastest.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
                     String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
                     String FPMsg = STATUS_FP_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
                     outgoingMessage(FPMsg);
-                    //outgoingMessage(STATUS_FP_HEADER);
                     updateStatus(STATUS_FP_DESC);
                 }
 
@@ -370,69 +389,37 @@ public class MainActivity extends AppCompatActivity {
 
                 updateStatus(STATUS_FP_DESC);
 
-                /*/ New Animation
-                int i = 0;
-                String movement[] = message[4].split(",");
-                int movement_size = movement.length;
-                final Handler handlerL = new Handler();
-                final Handler handlerR = new Handler();
-                for (i = 0; i < movement_size; i++){
-                    if (movement[i].contains("L")){
-                        handlerL.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Robot.getInstance().rotateLeft();
-                                loadGrid();
-                            }
-                        },1000);
-                    }
-                    else if (movement[i].contains("R")){
-                        handlerR.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                Robot.getInstance().rotateRight();
-                                loadGrid();
-                            }
-                        },2000);
-                    }
-                }
-                /*/
-
-
-                /*/ Old Animation
-                i=0;
-                movement = new String[0];
-                movement = (message[4].split(",")); //if there are multiple movements
+                // New Animation
+                i = 0;
+                movement = message[4].split(",");
                 movement_size = movement.length;
-
-                while (i < movement_size) {
-                    handler.postDelayed(new Runnable() { //move the robot after every movement
-                        @Override
-                        public void run() {
-
-                            //handler1 = new Handler();
-                            if (movement[i].contains("F")) {
-                                Robot.getInstance().moveForward(10);
-
-                            } else if (movement[i].contains("L")) {
-                                Robot.getInstance().rotateLeft();
-
-                            } else if (movement[i].contains("R")) {
-                                Robot.getInstance().rotateRight();
-                            }
-
-                            loadGrid();
-
+                handler.post(allMovementCommand);
+                allMovementCommand = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (movement[i].contains("L")){
+                            Robot.getInstance().rotateLeft();
+                        }
+                        else if (movement[i].contains("R")){
+                            Robot.getInstance().rotateRight();
                         }
 
+                        
 
-                    }, 1000);
-                    i++;
+                        if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
+                            loadGrid();
+                        }
 
-                }/*/
+                        i++;
+                        if (i < movement_size) {
+                            handler.postDelayed(allMovementCommand, 1000);
+                        }
+
+                    }
+                };
 
 
-                // Without animation
+                /*/ Without animation
 
                 String movement[] = message[4].split(","); //if there are multiple movements
                 int movement_size = movement.length;
@@ -455,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                         Robot.getInstance().rotateRight();
                         }
 
-                } //
+                } /*/
 
 
             }
@@ -491,9 +478,9 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-        if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
+        /*if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
             loadGrid();
-        }
+        }*/
 
     }
 
