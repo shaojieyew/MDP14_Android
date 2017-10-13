@@ -3,6 +3,7 @@ package mdp14.mdp14app;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,12 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Timer;
 
 import mdp14.mdp14app.bluetooth.BluetoothChatFragment;
 import mdp14.mdp14app.model.Map;
@@ -113,21 +120,21 @@ public class MainActivity extends AppCompatActivity {
                 Robot.getInstance().moveForward(10);
 
 
-                outgoingMessage("MR||F10|");
+                outgoingMessage("MV||F10|");
                 loadGrid();
             }
         });
         btn_left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateLeft();
-                outgoingMessage("MR||L90|");
+                outgoingMessage("MV||L90|");
                 loadGrid();
             }
         });
         btn_right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateRight();
-                outgoingMessage("MR||R90|");
+                outgoingMessage("MV||R90|");
                 loadGrid();
             }
         });
@@ -397,7 +404,54 @@ public class MainActivity extends AppCompatActivity {
                             Robot.getInstance().rotateRight();
                         }
 
-                        
+                        /*/Forward animation
+
+                        else if (movement[i].contains("F")) {
+                            j = 0;
+                            step = movement[i].split("F");
+                            noOfSteps = (Integer.parseInt(step[1])/10);
+
+
+                                handlerForward.post(forwardMovement);
+                                forwardMovement = new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        Robot.getInstance().moveForward(10);
+                                        if (menu_auto_update_map != null && menu_auto_update_map.isChecked()) {
+                                            loadGrid();
+                                        }
+                                        j++;
+                                        if (j < noOfSteps) {
+                                            handlerForward.postDelayed(forwardMovement, 1000);
+                                        }
+
+                                    }
+
+                            };
+                        }/*/
+
+                        /*/else if (movement[i].contains("F")) {
+                            j = 0;
+                            step = movement[i].split("F");
+                            noOfSteps = (Integer.parseInt(step[1])/10);
+
+                            handlerForward.post( new Runnable() {
+                                @Override
+                                public void run() {
+                                    Robot.getInstance().moveForward(10);
+                                    if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
+                                        loadGrid();
+                                    }
+                                    j++;
+                                    if(j < noOfSteps){
+                                        handlerForward.postDelayed(this, 1000);
+                                    }
+
+                                }
+                            });
+                        }
+                        /*/
 
                         if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
                             loadGrid();
