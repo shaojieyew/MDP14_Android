@@ -3,7 +3,6 @@ package mdp14.mdp14app;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,12 +14,6 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Timer;
 
 import mdp14.mdp14app.bluetooth.BluetoothChatFragment;
 import mdp14.mdp14app.model.Map;
@@ -120,21 +113,21 @@ public class MainActivity extends AppCompatActivity {
                 Robot.getInstance().moveForward(10);
 
 
-                outgoingMessage("MV||F10|");
+                outgoingMessage("MR||F10|");
                 loadGrid();
             }
         });
         btn_left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateLeft();
-                outgoingMessage("MV||L90|");
+                outgoingMessage("MR||L90|");
                 loadGrid();
             }
         });
         btn_right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateRight();
-                outgoingMessage("MV||R90|");
+                outgoingMessage("MR||R90|");
                 loadGrid();
             }
         });
