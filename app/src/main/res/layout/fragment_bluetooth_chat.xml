@@ -19,25 +19,35 @@
               android:layout_height="match_parent"
               android:orientation="vertical" >
 
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6">
-
-        <ListView
-            android:id="@+id/in"
+        android:layout_gravity="top"
+        android:layout_weight="0.6"
+        android:orientation="vertical">
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll" />
-    </ScrollView>
+            android:layout_marginTop="3dp"
+            >
+
+            <ListView
+                android:id="@+id/in"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:stackFromBottom="true"
+                android:divider="#4DB6AC"
+                android:dividerHeight="1dp"
+                android:transcriptMode="alwaysScroll" />
+        </ScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="0.4" >
+        android:layout_gravity="bottom"
+        android:layout_weight="0.4"
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/edit_text_out"

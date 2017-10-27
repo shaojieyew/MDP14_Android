@@ -381,6 +381,10 @@ public class MainActivity extends AppCompatActivity {
                 r.setPosY(Float.parseFloat(posAndDirect[1]));
                 r.setDirection(Float.parseFloat(posAndDirect[2]));
                 //EX|[explored map]|[explored obstacles]|[robot position & direction]|
+
+                if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
+                    loadGrid();
+                }
             }
 
             //fastest path
