@@ -25,21 +25,18 @@
         android:layout_gravity="top"
         android:layout_weight="0.6"
         android:orientation="vertical">
-        <ScrollView
+
+        <ListView
+            android:id="@+id/in"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="3dp"
-            >
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:stackFromBottom="true"
+            android:divider="#4DB6AC"
+            android:dividerHeight="1dp"
+            android:transcriptMode="alwaysScroll" />
 
-            <ListView
-                android:id="@+id/in"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:stackFromBottom="true"
-                android:divider="#4DB6AC"
-                android:dividerHeight="1dp"
-                android:transcriptMode="alwaysScroll" />
-        </ScrollView>
     </LinearLayout>
 
     <LinearLayout
