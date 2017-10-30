@@ -54,7 +54,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
             android:layout_weight="0.815"
-            android:textColor="#ffffff"/>
+            android:textColor="#ffffff"
+            android:backgroundTint="#4DB6AC"/>
 
         <Button
             android:id="@+id/button_send"

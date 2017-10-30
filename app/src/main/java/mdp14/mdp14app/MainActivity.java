@@ -120,21 +120,21 @@ public class MainActivity extends AppCompatActivity {
                 Robot.getInstance().moveForward(10);
 
 
-                outgoingMessage("MV||F10|");
+                outgoingMessage("MR||F10|");
                 loadGrid();
             }
         });
         btn_left.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateLeft();
-                outgoingMessage("MV||L90|");
+                outgoingMessage("MR||L90|");
                 loadGrid();
             }
         });
         btn_right.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Robot.getInstance().rotateRight();
-                outgoingMessage("MV||R90|");
+                outgoingMessage("MR||R90|");
                 loadGrid();
             }
         });
@@ -146,25 +146,27 @@ public class MainActivity extends AppCompatActivity {
         });
         btn_explr.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
+                String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
+                String direction = String.valueOf(Robot.getInstance().getDirection());
+                String exploringMsg;
                 if (WayPoint.wp.getPosition() == null) {
-                    status = "Setting WayPoint";
+                    /*/status = "Setting WayPoint";
                     updateStatus(status);
 
                     menu_set_robot_position.setChecked(false);
                     menu_set_waypoint.setChecked(true);
                     Toast toast=Toast.makeText(getApplicationContext(),"Tap the Grid to set WayPoint",Toast.LENGTH_LONG);
-                    toast.show();
-
+                    toast.show();/*/
+                    exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||");
                 }else{
-                    String positionX = String.valueOf(Robot.getInstance().getPosX()) ;
-                    String positionY = String.valueOf(Robot.getInstance().getPosY()) ;
-                    String direction = String.valueOf(Robot.getInstance().getDirection());
                     String wpX = String.valueOf(WayPoint.getInstance().getPosition().getPosX());
                     String wpY = String.valueOf(WayPoint.getInstance().getPosition().getPosY());
-                    String exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
-                    outgoingMessage(exploringMsg);
-                    updateStatus(STATUS_EX_DESC);
+                    exploringMsg = STATUS_EX_HEADER.concat("|").concat(positionX).concat(",").concat(positionY).concat(",").concat(direction).concat("||").concat(wpX).concat(",").concat(wpY);
+
                 }
+                outgoingMessage(exploringMsg);
+                updateStatus(STATUS_EX_DESC);
             }
         });
         btn_fastest.setOnClickListener(new View.OnClickListener() {
