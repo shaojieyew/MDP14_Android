@@ -395,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
 
                 updateStatus(STATUS_FP_DESC);
 
-                // New Animation
+                /*/ New Animation
                 i = 0;
                 movement = message[4].split(",");
                 movement_size = movement.length;
@@ -410,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
                             Robot.getInstance().rotateRight();
                         }
 
-                        /*/Forward animation
+                        //Forward animation
 
                         else if (movement[i].contains("F")) {
                             j = 0;
@@ -457,7 +457,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        /*/
+
 
                         if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
                             loadGrid();
@@ -469,10 +469,10 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
-                };
+                };/*/
 
 
-                /*/ Without animation
+                // Without animation
 
                 String movement[] = message[4].split(","); //if there are multiple movements
                 int movement_size = movement.length;
@@ -495,7 +495,10 @@ public class MainActivity extends AppCompatActivity {
                         Robot.getInstance().rotateRight();
                         }
 
-                } /*/
+                }
+                if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
+                    loadGrid();
+                }//
 
 
             }
