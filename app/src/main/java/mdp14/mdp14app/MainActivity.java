@@ -54,23 +54,18 @@ public class MainActivity extends AppCompatActivity {
 
     String status = "Idle";
 
-    /*/int i = 0;
-    String movement[] = new String[0]; //if there are multiple movements
-    int movement_size = movement.length;
-    /*/
-
     //For robot fastest-path animation
     int i = 0;
     String movement[] = new String[0]; //if there are multiple movements
     int movement_size = movement.length;
-    Handler handler = new Handler();
-    Runnable allMovementCommand;
-    Handler handlerForward = new Handler();
-    Runnable forwardMovement;
-    int j = 0;
-    String step [] = new String [0];
-    int noOfSteps = 0;
+    int overAllTimer = 1;
+    Handler OverallHandler = new Handler();
+
     //
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -396,80 +391,80 @@ public class MainActivity extends AppCompatActivity {
                 updateStatus(STATUS_FP_DESC);
 
                 /*/ New Animation
-                i = 0;
-                movement = message[4].split(",");
+                movement = message[4].split(","); //if there are multiple movements
                 movement_size = movement.length;
-                handler.post(allMovementCommand);
-                allMovementCommand = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (movement[i].contains("L")){
-                            Robot.getInstance().rotateLeft();
-                        }
-                        else if (movement[i].contains("R")){
-                            Robot.getInstance().rotateRight();
-                        }
-
-                        //Forward animation
-
-                        else if (movement[i].contains("F")) {
-                            j = 0;
-                            step = movement[i].split("F");
-                            noOfSteps = (Integer.parseInt(step[1])/10);
 
 
-                                handlerForward.post(forwardMovement);
-                                forwardMovement = new Runnable() {
-                                    @Override
-                                    public void run() {
+                for (i = 0; i < movement_size; i++){
+                    final Runnable OverAll  = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (movement[i].contains("F")) {
+                                String step[] = movement[i].split("F");
+                                int noOfSteps = (Integer.parseInt(step[1])/10);
 
-                                        Robot.getInstance().moveForward(10);
-                                        if (menu_auto_update_map != null && menu_auto_update_map.isChecked()) {
-                                            loadGrid();
+                                overAllTimer += noOfSteps;
+
+                                Handler ForwardHandler = new Handler();
+                                for (int forward=0; forward < noOfSteps; forward++){
+                                    ForwardHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Robot.getInstance().moveForward(10);
+                                            if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()) {
+                                                loadGrid();
+                                            }
                                         }
-                                        j++;
-                                        if (j < noOfSteps) {
-                                            handlerForward.postDelayed(forwardMovement, 1000);
-                                        }
-
-                                    }
-
-                            };
-                        }/*/
-
-                        /*/else if (movement[i].contains("F")) {
-                            j = 0;
-                            step = movement[i].split("F");
-                            noOfSteps = (Integer.parseInt(step[1])/10);
-
-                            handlerForward.post( new Runnable() {
-                                @Override
-                                public void run() {
-                                    Robot.getInstance().moveForward(10);
-                                    if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
-                                        loadGrid();
-                                    }
-                                    j++;
-                                    if(j < noOfSteps){
-                                        handlerForward.postDelayed(this, 1000);
-                                    }
+                                    }, (forward + 1) * 1000);
 
                                 }
-                            });
+                            }
+
+                            if (movement[i].contains("L")){
+                                String step[] = movement[i].split("L");
+                                int noOfRotation = (Integer.parseInt(step[1])/90);
+
+                                overAllTimer += noOfRotation;
+                                Handler LeftRotationHandler = new Handler();
+                                for (int rotation=0; rotation < noOfRotation; rotation++){
+                                    LeftRotationHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Robot.getInstance().rotateLeft();
+                                            if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()) {
+                                                loadGrid();
+                                            }
+                                        }
+                                    }, (rotation + 1) * 1000);
+                                }
+                            }
+
+                            if (movement[i].contains("R")){
+                                String step[] = movement[i].split("R");
+                                int noOfRotation = (Integer.parseInt(step[1])/90);
+
+                                overAllTimer += noOfRotation;
+                                Handler RightRotationHandler = new Handler();
+                                for (int rotation=0; rotation < noOfRotation; rotation++){
+                                    RightRotationHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Robot.getInstance().rotateRight();
+                                            if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()) {
+                                                loadGrid();
+                                            }
+                                        }
+                                    }, (rotation + 1) * 1000);
+                                }
+                            }
+
                         }
+                    };
 
 
-                        if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
-                            loadGrid();
-                        }
 
-                        i++;
-                        if (i < movement_size) {
-                            handler.postDelayed(allMovementCommand, 1000);
-                        }
 
-                    }
-                };/*/
+                }/*/
 
 
                 // Without animation
@@ -488,12 +483,30 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
+
                     if (movement[i].contains("L")){
-                        Robot.getInstance().rotateLeft();
-                    }
-                    if (movement[i].contains("R")){
-                        Robot.getInstance().rotateRight();
+                        String step[] = movement[i].split("L");
+                        int noOfRotation = (Integer.parseInt(step[1])/90);
+
+                        for (int rotation=0; rotation < noOfRotation; rotation++){
+                            Robot.getInstance().rotateLeft();
+                            if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()) {
+                                loadGrid();
+                            }
                         }
+                    }
+
+                    if (movement[i].contains("R")){
+                        String step[] = movement[i].split("R");
+                        int noOfRotation = (Integer.parseInt(step[1])/90);
+
+                        for (int rotation=0; rotation < noOfRotation; rotation++){
+                            Robot.getInstance().rotateRight();
+                            if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()) {
+                                loadGrid();
+                            }
+                        }
+                    }
 
                 }
                 if(menu_auto_update_map!=null&&menu_auto_update_map.isChecked()){
